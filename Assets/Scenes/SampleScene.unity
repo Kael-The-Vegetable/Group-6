@@ -132,7 +132,8 @@ GameObject:
   m_Component:
   - component: {fileID: 36456324}
   - component: {fileID: 36456325}
-  m_Layer: 0
+  - component: {fileID: 36456326}
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +149,7 @@ Transform:
   m_GameObject: {fileID: 36456323}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.5, y: -2.01, z: 27.35}
+  m_LocalPosition: {x: -7.5, y: -2.475, z: 20.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -184,6 +185,31 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &36456326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36456323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f1892116b6eb3449891eb4273206ff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 7
+  groundDrag: 5
+  jumpForce: 12
+  jumpCooldown: 0.25
+  airMultiplier: 0.4
+  jumpKey: 32
+  playerHeight: 0
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1024
+  orientation: {fileID: 1705987253}
+  horizontalInput: 0
+  verticalInput: 0
 --- !u!1 &189981118
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,7 +1191,7 @@ GameObject:
   - component: {fileID: 1141674034}
   - component: {fileID: 1141674033}
   - component: {fileID: 1141674032}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1253,7 +1279,7 @@ Transform:
   m_GameObject: {fileID: 1141674031}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.11, y: 0, z: 0.006}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 500, y: 500, z: 500}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1949,7 +1975,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1705987253}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2108,7 +2134,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1798128669}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CameraPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2124,7 +2150,7 @@ Transform:
   m_GameObject: {fileID: 1798128668}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.28, y: 7.786, z: -7.221}
+  m_LocalPosition: {x: 8.34, y: 3.925, z: -14.268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2516,9 +2542,9 @@ GameObject:
   - component: {fileID: 2007978312}
   - component: {fileID: 2007978311}
   - component: {fileID: 2007978310}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerObj
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2532,7 +2558,7 @@ Transform:
   m_GameObject: {fileID: 2007978308}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.32, y: 7.35, z: -7.186}
+  m_LocalPosition: {x: 8.32, y: 3.44, z: -14.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
