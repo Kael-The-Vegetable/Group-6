@@ -1,6 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.InputSystem.HID;
+using UnityEngine.ProBuilder.Shapes;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("KeyBinds")]
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode hookKey = KeyCode.Tab;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -30,6 +36,20 @@ public class PlayerMovement : MonoBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
+
+    [Header("Grappel Hook")]
+    public RectTransform Sprite;
+    public Rigidbody currentTarget;
+    public Camera currentCamera;
+    public Camera currentCamera2d;
+    public List<Rigidbody> targets;
+    public float max_distance;
+    public float grapelForce;
+    public LineRenderer laserLine;
+    public GameObject laserOrigin;
+
+    private bool hooking = false;
+    private bool letGo = false;
 
     private void Start()
     {
@@ -51,11 +71,25 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
+
+        // https://u3ds.blogspot.com/2021/12/shooting-laser-raycast-linerenderer.html
+        if (currentTarget != null && hooking)
+        {
+            laserLine.SetWidth(0.1f, 0.1f);
+            laserLine.SetPosition(0, laserOrigin.transform.position);
+            laserLine.SetPosition(1, currentTarget.transform.position);
+        }
+
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
+        if (FindClosestTarget())
+        {
+            MoveTarget();
+        }
+        
     }
 
     private void MyInput()
@@ -72,6 +106,14 @@ public class PlayerMovement : MonoBehaviour
             Jump();
 
             Invoke(nameof(ResetJump), jumpCooldown);
+        }
+
+        if (Input.GetKey(hookKey))
+        {
+            StartHook();
+        } else
+        {
+            EndHook();
         }
     }
 
@@ -115,4 +157,96 @@ public class PlayerMovement : MonoBehaviour
     {
         readyToJump = true;
     }
+
+    public void AddRigidBody(Rigidbody Body)
+    {
+        if (!targets.Contains(Body))
+        {
+            targets.Add(Body);
+        }
+    }
+
+    public void RemoveRigidBody(Rigidbody Body) { 
+        if (targets.Contains(Body)) { 
+            targets.Remove(Body); 
+        }
+    }
+
+    private bool FindClosestTarget()
+    {
+        // https://docs.unity3d.com/ScriptReference/Camera.WorldToViewportPoint.html
+
+        float largest = max_distance;
+        Rigidbody newrb = null;
+
+        for (int target = 0; target < targets.Count; target++) {
+
+            if (targets[target] == null)
+            {
+                continue;
+            }
+
+            Vector3 viewPos = currentCamera.WorldToViewportPoint(targets[target].position);
+            if (viewPos.x + viewPos.y < largest)
+                newrb = targets[target];
+                largest = viewPos.x + viewPos.y;
+        }
+
+        if (newrb == null)
+        {
+            return false;
+        }
+
+
+
+
+        currentTarget = newrb;
+
+        return true;
+    }
+
+    public void MoveTarget()
+    {
+        if (currentTarget == null)
+        {
+            Sprite.transform.position  = Vector3.zero;
+        }
+
+        Vector3 screenPosition = currentCamera.WorldToScreenPoint(currentTarget.transform.position);
+        Sprite.transform.position = new Vector3(screenPosition.x, screenPosition.y, 10);
+    }
+
+    private void StartHook() {
+        rb.useGravity = false;
+        laserLine.enabled = true;
+        hooking = true;
+        ApplyForce(currentTarget);
+    }
+
+    private void LetGo()
+    {
+        rb.useGravity = true;
+
+        Vector3 direction = currentTarget.transform.position - transform.position;
+        rb.AddForceAtPosition(direction.normalized * grapelForce * 100, currentTarget.transform.position);
+    }
+
+    private void EndHook()
+    {
+        hooking = false;
+        laserLine.enabled = false;
+
+        if (letGo) {
+            letGo = false;
+            LetGo();
+        }
+    }
+
+    // https://docs.unity3d.com/ScriptReference/Rigidbody.AddForceAtPosition.html
+    void ApplyForce(Rigidbody body)
+    {
+        transform.localPosition = Vector3.MoveTowards(transform.localPosition, currentTarget.transform.position, Time.deltaTime * grapelForce);
+        letGo = true;
+    }
 }
+    
