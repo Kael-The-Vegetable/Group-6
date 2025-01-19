@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("KeyBinds")]
     public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode hookKey = KeyCode.Tab;
+    public KeyCode hookKey = KeyCode.Mouse0;
 
     [Header("Ground Check")]
     public float playerHeight;
