@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    [Header("Grappel Hook")]
+    [Header("Grapple Hook")]
     public RectTransform Sprite;
     public Rigidbody currentTarget;
     public Camera currentCamera;
